@@ -1,0 +1,4 @@
+adminPassword: admin
+grafana.ini:
+  feature_toggles:
+    enable: tempoSearch,fullRangeLogsVolume
