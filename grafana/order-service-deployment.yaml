@@ -7,12 +7,12 @@ spec:
   selector:
     matchLabels:
       app: order-service
-      compoment: java
+      component: java
   template:
     metadata:
       labels:
         app: order-service
-        compoment: java
+        component: java
     spec:
       initContainers:
         - name: otel-javaagent
@@ -27,18 +27,19 @@ spec:
           name: order-service
           env:
             - name: JAVA_OPTS
-              value: "-javaagent:/otel-javaagent/opentelemetry-javaagent.jar"
+              value: "-XX:+UseG1GC -XX:MaxRAMPercentage=75 -XX:MaxMetaspaceSize=128m -Xss256k -XX:G1PeriodicGCInterval=900k -javaagent:/otel-javaagent/opentelemetry-javaagent.jar"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://opentelemetry-collector:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.name=order-service,service.namespace=defalut"
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           volumeMounts:
             - name: otel-javaagent
               mountPath: /otel-javaagent
       volumes:
-        - emptyDir: { }
+        - emptyDir: {}
           name: otel-javaagent
 ---
 apiVersion: v1
