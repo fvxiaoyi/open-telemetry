@@ -15,15 +15,17 @@ standaloneCollector:
           insecure: true
     service:
       pipelines:
-        traces:
-          exporters: [otlp/elastic]
-          processors:
-            - memory_limiter
-            - batch
-          receivers: [otlp]
         metrics:
-          receivers: [otlp]
+          receivers:
+            - otlp
           processors:
-            - memory_limiter
             - batch
-          exporters: [otlp/elastic]
+          exporters:
+            - otlp/elastic
+        traces:
+          receivers:
+            - otlp
+          processors:
+            - batch
+          exporters:
+            - otlp/elastic
