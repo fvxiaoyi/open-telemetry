@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+      type: application
+  template:
+    metadata:
+      labels:
+        app: order-service
+        type: application
+    spec:
+      initContainers:
+        - name: otel-javaagent
+          image: ebinsu/agent:1
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: otel-javaagent
+              mountPath: /otel-javaagent
+      containers:
+        - image: ebinsu/order-service:22
+          imagePullPolicy: IfNotPresent
+          name: order-service
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=order-service,service.namespace=defalut"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: otel-javaagent
+              mountPath: /otel-javaagent
+      volumes:
+        - emptyDir: { }
+          name: otel-javaagent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  type: NodePort
+  ports:
+    - name: port
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 31000
+  selector:
+    app: order-service
+    type: application
+

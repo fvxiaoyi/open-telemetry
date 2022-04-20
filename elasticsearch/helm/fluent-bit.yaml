@@ -1,0 +1,49 @@
+enabled: false
+fullnameOverride: fluent-bit
+image:
+pullPolicy: IfNotPresent
+env:
+  - name: FLUENT_ELASTICSEARCH_HOST
+    value: "192.168.137.1"
+  - name: FLUENT_ELASTICSEARCH_PORT
+    value: "9200"
+    config:
+    inputs: |
+    [INPUT]
+    Name              tail
+    Tag               kube.*
+    Path              /var/log/containers/*.log
+    read_from_head    true
+    multiline.parser  docker,java
+    filters: |
+    [FILTER]
+    Name             kubernetes
+    Match            kube.*
+    Kube_URL         https://kubernetes.default.svc:443
+    Kube_CA_File     /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    Kube_Token_File  /var/run/secrets/kubernetes.io/serviceaccount/token
+    Kube_Tag_Prefix  kube.var.log.containers.
+    Merge_Log        On
+    Merge_Log_Key    log_processed
+    outputs: |
+    [OUTPUT]
+    Name es
+    Match kube.*
+    Host ${FLUENT_ELASTICSEARCH_HOST}
+    Port ${FLUENT_ELASTICSEARCH_PORT}
+    Logstash_Format On
+    Logstash_DateFormat %Y.%m
+    Include_Tag_Key On
+    Replace_Dots On
+    Generate_ID On
+    Retry_Limit 10
+    customParsers: |
+    [MULTILINE_PARSER]
+    name          multiline-regex-test
+    type          regex
+    flush_timeout 1000
+    rule      "start_state"   '/(?<log>^\{"log":"\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}(.|\n)*$)/'  "start_state"
+    [PARSER]
+    Name java-1
+    Format regex
+    Regex (?<timestr>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s+(?<trace_id>[0-9a-z]{0,32})\s(?<span_id>[0-9a-z]{0,16})\s(?<level>[\w]{1,5})\s(.|\n)*
