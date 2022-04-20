@@ -10,12 +10,9 @@ config:
           selector: '{component="java"}'
           stages:
             - multiline:
-                firstline: ^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s
+                firstline: ^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}
             - regex:
                 expression: \d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s(?P<trace_id>[0-9a-z]{32})?\s(?P<span_id>[0-9a-z]{16})?\s(?P<level>\w{4,5})(?:.|\n)*
-            - replace:
-                expression: "(\\n)"
-                replace: ""
             - labels:
                 level:
                 trace_id:
