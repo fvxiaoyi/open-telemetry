@@ -7,12 +7,11 @@ spec:
   selector:
     matchLabels:
       app: order-service
-      type: application
+      compoment: java
   template:
     metadata:
       labels:
         app: order-service
-        type: application
         compoment: java
     spec:
       initContainers:
@@ -56,5 +55,5 @@ spec:
       nodePort: 30000
   selector:
     app: order-service
-    type: application
+    compoment: java
 
