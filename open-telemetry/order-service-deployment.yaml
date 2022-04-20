@@ -26,6 +26,8 @@ spec:
           imagePullPolicy: IfNotPresent
           name: order-service
           env:
+            - name: JAVA_OPTS
+              value: "-javaagent:/otel-javaagent/opentelemetry-javaagent.jar"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://opentelemetry-collector:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
