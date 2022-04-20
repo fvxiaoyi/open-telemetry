@@ -2,3 +2,6 @@ adminPassword: admin
 grafana.ini:
   feature_toggles:
     enable: tempoSearch,fullRangeLogsVolume
+service:
+  type: NodePort
+  nodePort: 33000
