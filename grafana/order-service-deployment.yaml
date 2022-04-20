@@ -22,7 +22,7 @@ spec:
             - name: otel-javaagent
               mountPath: /otel-javaagent
       containers:
-        - image: ebinsu/order-service:22
+        - image: ebinsu/order-service:27
           imagePullPolicy: IfNotPresent
           name: order-service
           env:
