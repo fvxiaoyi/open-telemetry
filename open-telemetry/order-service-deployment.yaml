@@ -27,7 +27,7 @@ spec:
           name: order-service
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://tempo:4317"
+              value: "http://opentelemetry-collector:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.name=order-service,service.namespace=defalut"
           ports:
@@ -50,7 +50,7 @@ spec:
       port: 8080
       protocol: TCP
       targetPort: 8080
-      nodePort: 31000
+      nodePort: 30000
   selector:
     app: order-service
     type: application

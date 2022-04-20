@@ -1,0 +1,29 @@
+fullnameOverride: opentelemetry-collector
+agentCollector:
+  enabled: false
+standaloneCollector:
+  enabled: true
+  resources:
+    limits:
+      cpu: 64m
+      memory: 128Mi
+  configOverride:
+    exporters:
+      otlp/elastic:
+        endpoint: 192.168.137.1:8200
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          exporters: [otlp/elastic]
+          processors:
+            - memory_limiter
+            - batch
+          receivers: [otlp]
+        metrics:
+          receivers: [otlp]
+          processors:
+            - memory_limiter
+            - batch
+          exporters: [otlp/elastic]
