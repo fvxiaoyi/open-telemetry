@@ -13,6 +13,7 @@ spec:
       labels:
         app: order-service
         type: application
+        compoment: java
     spec:
       initContainers:
         - name: otel-javaagent
