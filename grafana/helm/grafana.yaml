@@ -4,4 +4,4 @@ grafana.ini:
     enable: tempoSearch,fullRangeLogsVolume
 service:
   type: NodePort
-  nodePort: 33000
+  nodePort: 30100
