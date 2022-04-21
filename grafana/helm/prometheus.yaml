@@ -12,20 +12,7 @@ extraScrapeConfigs: |
   - job_name: "mysql"
     metrics_path: /metrics
     static_configs:
-      - targets: ["mysql-exporter-prometheus-mysql-exporter:9104"]
-serverFiles:
-  alerting_rules.yml:
-    groups:
-      - name: jvm-alerting
-        rules:
-          - alert: InstanceDown
-            expr: up > 0
-            for: 1m
-            labels:
-              severity: yellow
-            annotations:
-              summary: "{{ $labels.pod }} down"
-              description: "{{ $labels.pod }} of job {{ $labels.job }} has been down for more than 2 minutes."
+      - targets: ["mysql-exporter:9104"]
 alertmanagerFiles:
   alertmanager.yml:
     route:

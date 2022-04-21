@@ -13,8 +13,18 @@ spec:
       labels:
         app: order-service
         component: java
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9464"
+        prometheus.io/path: "/metrics"
     spec:
       initContainers:
+        - name: prometheus-agent
+          image: ebinsu/prometheus-agent:12
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: prometheus-javaagent
+              mountPath: /prometheus-javaagent
         - name: otel-javaagent
           image: ebinsu/agent:1
           imagePullPolicy: IfNotPresent
@@ -22,12 +32,12 @@ spec:
             - name: otel-javaagent
               mountPath: /otel-javaagent
       containers:
-        - image: ebinsu/order-service:22
+        - image: ebinsu/order-service:27
           imagePullPolicy: IfNotPresent
           name: order-service
           env:
             - name: JAVA_OPTS
-              value: "-javaagent:/otel-javaagent/opentelemetry-javaagent.jar"
+              value: "-javaagent:/otel-javaagent/opentelemetry-javaagent.jar -javaagent:/prometheus-javaagent/jmx_prometheus_javaagent.jar=9464:/prometheus-javaagent/config.yaml"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://opentelemetry-collector:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
@@ -35,26 +45,15 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+            - name: metrics
+              containerPort: 9464
           volumeMounts:
             - name: otel-javaagent
               mountPath: /otel-javaagent
+            - name: prometheus-javaagent
+              mountPath: /prometheus-javaagent
       volumes:
-        - emptyDir: {}
+        - emptyDir: { }
           name: otel-javaagent
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: order-service
-spec:
-  type: NodePort
-  ports:
-    - name: port
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-      nodePort: 30000
-  selector:
-    app: order-service
-    component: java
-
+        - emptyDir: { }
+          name: prometheus-javaagent
