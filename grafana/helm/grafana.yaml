@@ -1,3 +1,8 @@
+# loki datasource Derived fields:
+#                   regex: (?<trace_id>[0-9a-z]{32})
+#                   query: ${__value.raw}
+#                   Internal link: temp
+
 adminPassword: admin
 grafana.ini:
   feature_toggles:

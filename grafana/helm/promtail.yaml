@@ -1,4 +1,7 @@
-#  regex see： https://regoio.herokuapp.com/
+# 1. regex see： https://regoio.herokuapp.com/
+# 2. image 2.5.0 replace \n has som problem
+# 3. docker log see /var/log/containers
+
 fullnameOverride: promtail
 image:
   tag: 2.4.2
