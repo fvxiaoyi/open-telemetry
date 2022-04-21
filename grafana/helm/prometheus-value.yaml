@@ -24,7 +24,7 @@ alertmanagerFiles:
       - name: "default-receiver"
         slack_configs:
           - send_resolved: true
-            api_url: https://hooks.slack.com/services/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
+            api_url: https://hooks.slack.com/services/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
             text: |-
               summary: {{ .CommonAnnotations.summary }}
               description: {{ .CommonAnnotations.description }}
