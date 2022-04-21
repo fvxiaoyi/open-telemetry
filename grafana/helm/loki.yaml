@@ -15,6 +15,18 @@ config:
       kvstore:
         store: inmemory
     enable_api: true
+
+alerting_groups:
+  - name: should_fire
+    rules:
+      - alert: logging-error
+        expr: |
+          sum by (app) (rate({component="java",level="error"}[1m])) > 0
+        labels:
+          severity: red
+        annotations:
+          summary: "{{ $labels.namespace }} {{ $labels.pod }}java logging error"
+
 service:
   type: NodePort
   nodePort: 30101
