@@ -4,7 +4,7 @@ config:
   lokiAddress: http://loki:3100/loki/api/v1/push
   snippets:
     pipelineStages:
-      - docker: {}
+      - docker: { }
       - labeldrop:
           - container
           - job
@@ -18,6 +18,8 @@ config:
             - replace:
                 expression: "(\\n)"
                 replace: ""
+            - labeldrop:
+                - stream
             - labels:
                 level:
                 trace_id:
