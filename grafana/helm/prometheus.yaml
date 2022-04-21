@@ -13,10 +13,6 @@ extraScrapeConfigs: |
     metrics_path: /metrics
     static_configs:
       - targets: ["mysql-exporter-prometheus-mysql-exporter:9104"]
-  - job_name: "mongo"
-    metrics_path: /metrics
-    static_configs:
-      - targets: ["mongo-exporter:9216"]
 serverFiles:
   alerting_rules.yml:
     groups:
