@@ -57,3 +57,21 @@ spec:
           name: otel-javaagent
         - emptyDir: { }
           name: prometheus-javaagent
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  type: NodePort
+  ports:
+    - name: port
+      port: 8080
+      nodePort: 30000
+    - name: metrics
+      port: 9464
+      nodePort: 30001
+  selector:
+    app: order-service
+    component: java
