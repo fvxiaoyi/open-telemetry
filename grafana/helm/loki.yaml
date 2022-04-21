@@ -10,7 +10,7 @@ config:
       local:
         directory: /rules
     rule_path: /tmp/scratch
-    alertmanager_url: http://prometheus-alertmanager
+    alertmanager_url: http://192.168.137.1:9093
     ring:
       kvstore:
         store: inmemory
