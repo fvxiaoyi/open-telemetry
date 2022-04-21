@@ -4,6 +4,17 @@ config:
   table_manager:
     retention_deletes_enabled: true
     retention_period: 24h
+  ruler:
+    storage:
+      type: local
+      local:
+        directory: /rules
+    rule_path: /tmp/scratch
+    alertmanager_url: http://prometheus-alertmanager
+    ring:
+      kvstore:
+        store: inmemory
+    enable_api: true
 service:
   type: NodePort
   nodePort: 30101

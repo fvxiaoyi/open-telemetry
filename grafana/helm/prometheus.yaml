@@ -1,0 +1,47 @@
+alertmanager:
+  service:
+    type: NodePort
+    nodePort: 30103
+server:
+  persistentVolume:
+    storageClass: local-path
+  service:
+    type: NodePort
+    nodePort: 30102
+extraScrapeConfigs: |
+  - job_name: "mysql"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["mysql-exporter-prometheus-mysql-exporter:9104"]
+  - job_name: "mongo"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["mongo-exporter:9216"]
+serverFiles:
+  alerting_rules.yml:
+    groups:
+      - name: jvm-alerting
+        rules:
+          - alert: InstanceDown
+            expr: up > 0
+            for: 1m
+            labels:
+              severity: yellow
+            annotations:
+              summary: "{{ $labels.pod }} down"
+              description: "{{ $labels.pod }} of job {{ $labels.job }} has been down for more than 2 minutes."
+alertmanagerFiles:
+  alertmanager.yml:
+    route:
+      group_wait: 30s
+      group_interval: 30s
+      repeat_interval: 30s
+      receiver: "default-receiver"
+    receivers:
+      - name: "default-receiver"
+        slack_configs:
+          - send_resolved: true
+            api_url: https://hooks.slack.com/services/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
+            text: |-
+              summary: {{ .CommonAnnotations.summary }}
+              description: {{ .CommonAnnotations.description }}
