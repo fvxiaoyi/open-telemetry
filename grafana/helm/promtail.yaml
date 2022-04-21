@@ -1,11 +1,13 @@
 #  regex see： https://regoio.herokuapp.com/
-
 fullnameOverride: promtail
 config:
   lokiAddress: http://loki:3100/loki/api/v1/push
   snippets:
     pipelineStages:
       - docker: {}
+      - labeldrop:
+          - container
+          - job
       - match:
           selector: '{component="java"}'
           stages:
