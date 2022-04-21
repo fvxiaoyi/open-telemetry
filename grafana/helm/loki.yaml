@@ -21,7 +21,7 @@ alerting_groups:
     rules:
       - alert: logging-error
         expr: |
-          sum by (app) (rate({component="java",level="error"}[1m])) > 0
+          sum by (app) (rate({component="java",level="ERROR"}[1m])) > 0
         labels:
           severity: red
         annotations:
